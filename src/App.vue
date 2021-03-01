@@ -1,18 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <h1>{{count}}</h1>
-  <h1>{{double}}</h1>
-  <ul>
-    <li v-for="number in numbers" :key="number">{{number}}</li>
-  </ul>
-  <h1>{{person.name}}</h1>
-  <h1>x:{{x}},y:{{y}}</h1>
-  <button @click="increase">+</button>
+  <div>
+    <img alt="Vue logo" src="./assets/logo.png">
+    <h1>{{count}}</h1>
+    <h1>{{double}}</h1>
+    <h1 v-if="loading">loading...</h1>
+    <img v-if="loaded" :src="res.message">
+    <ul>
+      <li v-for="number in numbers" :key="number">{{number}}</li>
+    </ul>
+    <h1>{{person.name}}</h1>
+    <button @click="increase">+</button>
+  </div>
 </template>
 
 <script lang="ts">
 import {computed,reactive,ref,toRefs,onMounted,onUnmounted} from 'vue'
-import useMousePosition from "@/hooks/useMousePosition";
+import urlLoader from "@/hooks/useURLLoader";
+
 interface DataProps {
   count: number;
   increase: () => void;
@@ -32,19 +36,27 @@ export default ({
       },
       double: computed(() => data.count*2)
     })
-    const {x,y} = useMousePosition()
+    const {res,loading,loaded} = urlLoader('https://dog.ceo/api/breeds/image/random')
     data.numbers[0] = 5
     data.person.name = 'cx'
     const refData = toRefs(data)
     return {
       ...refData,
-      x,
-      y
+      res,
+      loaded,
+      loading
     }
   }
 });
 </script>
 
 <style>
-
+  div{
+    margin: 0 auto;
+    width: 500px;
+    text-align: center;
+  }
+  ul{
+    list-style:none
+  }
 </style>
