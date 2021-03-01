@@ -6,13 +6,13 @@
     <li v-for="number in numbers" :key="number">{{number}}</li>
   </ul>
   <h1>{{person.name}}</h1>
-  <h1>{{greetings}}</h1>
+  <h1>x:{{x}},y:{{y}}</h1>
   <button @click="increase">+</button>
-  <button @click="changeGreet">change title</button>
 </template>
 
 <script lang="ts">
-import {computed,reactive,ref,toRefs,onMounted,onUpdated,watch} from 'vue'
+import {computed,reactive,ref,toRefs,onMounted,onUnmounted} from 'vue'
+import useMousePosition from "@/hooks/useMousePosition";
 interface DataProps {
   count: number;
   increase: () => void;
@@ -23,27 +23,6 @@ interface DataProps {
 export default ({
   name: 'App',
   setup(){
-    // const count = ref(0)
-    // const double = computed(()=>{
-    //   return count.value*2
-    // })
-    // const increase = ()=>{
-    //   count.value++
-    // }
-
-    //测试钩子函数
-    onMounted(()=>{
-      console.log('mount');
-    })
-    onUpdated(()=>{
-      console.log('update');
-    })
-
-    const greetings = ref('')
-    const changeGreet = () => {
-      greetings.value += 'hello!'
-    }
-
     const data: DataProps = reactive({
       numbers: [0,1,2],
       person: {},
@@ -53,21 +32,14 @@ export default ({
       },
       double: computed(() => data.count*2)
     })
-    // data.count 不是响应式 但是可以调用传get函数（a getter/effect function）
-    watch([greetings,() => data.count],(newValue,oldValue)=>{
-      document.title = 'update' + greetings.value + data.count
-      console.log('new',newValue);
-      console.log('old',oldValue);
-
-    })
-
+    const {x,y} = useMousePosition()
     data.numbers[0] = 5
     data.person.name = 'cx'
     const refData = toRefs(data)
     return {
       ...refData,
-      greetings,
-      changeGreet
+      x,
+      y
     }
   }
 });
