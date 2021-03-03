@@ -1,9 +1,9 @@
 import {ref} from 'vue'
 import axios from "axios";
-function urlLoader(URL: string){
+function urlLoader<T>(URL: string){
     const loaded = ref(false)
     const loading = ref(true)
-    const res = ref(null)
+    const res = ref<T | null>(null)
     const err = ref(null)
     axios.get(URL).then((rawData) => {
         res.value = rawData.data
